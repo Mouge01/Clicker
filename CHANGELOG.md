@@ -1,5 +1,17 @@
 # Sürüm notları
 
+## V1.3 alpha — 22 Ekim 2026
+
+- Kullanıcı tarafından kapatılabilen arka planda ilerleme modu.
+- Eğitim ve SCORM çerçevelerinde, çalışma açıkken görünürlük/odak uyumluluğu.
+- Gizli sekmede bekleyen animasyon karelerine gerçek zamanlı saat desteği.
+- Çalışan sekmelere düzenli denetim ve 30 saniyelik worker kurtarma alarmı.
+- Gerçek sekme durumu, bağlantı ve uzun kontrol arası bilgisi gösteren panel.
+- Gizli sekme, durdurma, kare iptali, worker yeniden başlatma ve sekme temizleme testleri.
+- Windows/Caffeine güç yönetimi ayrı tutulur; güç ve idle izni eklenmez.
+
+V1.3, gerçek USES üzerinde gizli/küçültülmüş pencere testi tamamlanmadan deneme sürümü olarak değerlendirilmelidir.
+
 ## V1.2 alpha — 21 Ekim 2026
 
 İlk GitHub alpha paketi. Chrome manifest sürümü `1.2.0`, görüntülenen sürüm adı `V1.2 alpha`.

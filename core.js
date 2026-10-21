@@ -25,7 +25,7 @@
     return timeline.max > min && timeline.now >= timeline.max - 0.000001;
   }
   function initial() {
-    return { enabled: false, autoNext: true, skipQuestions: true, deferredLessons: {}, extraMs: 2000, lessonId: null,
+    return { enabled: false, autoNext: true, skipQuestions: true, backgroundMode: true, deferredLessons: {}, extraMs: 2000, lessonId: null,
       anchorAt: null, anchorPercent: null, slideKey: null, slideSince: null,
       readySince: null, pending: null, verification: null, unavailableSince: null,
       observedInstance: null, lastReadAt: null,
@@ -83,12 +83,13 @@
       }
     }
     const elapsed = st.lastTick == null ? 0 : Math.max(0, now - st.lastTick);
-    // Durdurulmuş veya arka plandaki sekmede yerel tahmini ilerletme.
-    if ((!st.enabled || s.hidden || st.wasHidden) && st.anchorAt != null) st.anchorAt += elapsed;
+    const visibilityBlocked = s.hidden && !st.backgroundMode;
+    // Arka plan modu kapalıysa gizli sekmede yerel tahmini ilerletme.
+    if ((!st.enabled || visibilityBlocked || st.wasHidden) && st.anchorAt != null) st.anchorAt += elapsed;
     st.lastTick = now;
-    st.wasHidden = s.hidden;
+    st.wasHidden = visibilityBlocked;
     if (!st.enabled) return result('idle', st.message);
-    if (s.hidden) return result('wait', 'Ders sekmesini görünür tutun; ilerletme bekliyor.');
+    if (visibilityBlocked) { st.readySince = null; return result('wait', 'Ders sekmesi gizli; arka plan modu kapalı olduğu için bekleniyor.'); }
     if (!s.lesson || !s.lessons?.length) {
       st.unavailableSince ??= now;
       return now - st.unavailableSince > 45000 ? pause('Ders listesi okunamadı. Sayfayı kontrol edip tekrar başlatın.') :

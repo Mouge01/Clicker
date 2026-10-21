@@ -1,10 +1,20 @@
 {
   "manifest_version": 3,
   "name": "USES Slayt Yardımcısı",
-  "version": "1.2.0",
-  "version_name": "V1.2 alpha",
-  "description": "Slayt sürelerini takip eder; katılımsız modda sorulu dersi sonraya bırakıp diğer derse geçer.",
+  "version": "1.3.0",
+  "version_name": "V1.3 alpha",
+  "minimum_chrome_version": "120",
+  "description": "USES slaytlarını arka planda takip eder; süreleri bekler, sorulu dersleri erteler ve diğer derse geçer.",
+  "permissions": ["alarms", "storage"],
+  "background": { "service_worker": "background.js" },
   "content_scripts": [{
+    "matches": ["https://egitim.saglik.gov.tr/EgitimIzle/*", "https://egitim.saglik.gov.tr/ScormCourses/*"],
+    "js": ["visibility.js"],
+    "run_at": "document_start",
+    "world": "MAIN",
+    "all_frames": true,
+    "match_about_blank": true
+  }, {
     "matches": ["https://egitim.saglik.gov.tr/EgitimIzle/*"],
     "js": ["core.js", "content.js"],
     "run_at": "document_idle",

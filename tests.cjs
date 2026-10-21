@@ -95,10 +95,10 @@ test('devam istemi yalnızca kayıtlı konum seçeneğini açar', () => {
   assert.equal(C.step(snapshot(), a.state, 2000).state.pending, null);
 });
 test('arka plandaki sekmede işlem yapılmaz', () => {
-  assert.equal(ready(snapshot({ hidden: true })).action.kind, 'wait');
+  assert.equal(ready(snapshot({ hidden: true }), { backgroundMode: false }).action.kind, 'wait');
 });
 test('arka planda geçen süre yerel kalan süreden düşülmez', () => {
-  let a = C.step(snapshot({ end: true }), running(), 1000);
+  let a = C.step(snapshot({ end: true }), running({ backgroundMode: false }), 1000);
   a = C.step(snapshot({ end: true, hidden: true }), a.state, 301000);
   a = C.step(snapshot({ end: true, hidden: false }), a.state, 331000);
   assert.equal(a.action.remainingMs, 960000);
@@ -154,9 +154,38 @@ test('oynatıcı uzun süre yüklenmezse otomatik tıklama durur', () => {
 test('izin kapsamı yalnızca eğitim sayfasıdır', () => {
   const manifest = require('./manifest.json');
   assert.equal(manifest.manifest_version, 3);
-  assert.deepEqual(manifest.content_scripts[0].matches, ['https://egitim.saglik.gov.tr/EgitimIzle/*']);
-  assert.equal(manifest.permissions, undefined);
+  const controller = manifest.content_scripts.find(script => script.js.includes('content.js'));
+  assert.deepEqual(controller.matches, ['https://egitim.saglik.gov.tr/EgitimIzle/*']);
+  assert.deepEqual(manifest.permissions, ['alarms', 'storage']);
   assert.equal(manifest.host_permissions, undefined);
+});
+
+test('arka plan modu açıkken gizli sekmede süre bitince ilerler', () => {
+  assert.equal(ready(snapshot({ hidden: true })).action.kind, 'advance');
+});
+test('arka planda da slayt süresi ve ek bekleme koşulları korunur', () => {
+  assert.equal(ready(snapshot({ hidden: true, timeline: { now: 4, max: 5 } })).action.kind, 'wait');
+  const a = C.step(snapshot({ hidden: true }), running(), 1000);
+  assert.equal(C.step(snapshot({ hidden: true }), a.state, 2999).action.kind, 'wait');
+  assert.equal(C.step(snapshot({ hidden: true }), a.state, 3001).action.kind, 'advance');
+});
+test('arka planda sorulu ders tamamlandı sayılmadan ertelenir', () => {
+  const a = C.step(snapshot({ hidden: true, question: true }), running(), 1000);
+  assert.equal(a.action.kind, 'switch');
+  assert.equal(a.action.targetId, other.id);
+  assert.ok(a.state.deferredLessons[lesson.id]);
+});
+test('arka plan modu açıkken beklenen süre ilerler ama sunucu onayı uydurulmaz', () => {
+  const a = C.step(snapshot({ end: true, hidden: true }), running(), 1000);
+  const b = C.step(snapshot({ end: true, hidden: true }), a.state, 301000);
+  assert.equal(b.action.remainingMs, 660000);
+  assert.equal(C.durationStatus(snapshot(), b.state, 301000).timeComplete, false);
+});
+test('arka plan modu kapatılınca gizli sekmede ilerleme kesilir', () => {
+  const a = C.step(snapshot({ hidden: true }), running(), 1000);
+  const b = C.step(snapshot({ hidden: true }), { ...a.state, backgroundMode: false }, 5000);
+  assert.equal(b.action.kind, 'wait');
+  assert.equal(b.state.readySince, null);
 });
 test('süre tamamlanması ile içerik tamamlanması ayrı raporlanır', () => {
   const l = { ...lesson, percent: 100 };

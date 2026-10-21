@@ -1,4 +1,4 @@
-/* Yalnızca görünür sayfa kontrollerini okur ve normal düğme tıklamaları yapar. */
+/* Sayfa kontrollerini okur; arka plan modu kullanıcı tarafından kapatılabilir. */
 (() => {
   'use strict';
   if (window.top !== window || document.getElementById('uses-slide-helper')) return;
@@ -14,9 +14,64 @@
   catch { storageAvailable = false; state.enabled = false; }
   let lastSnapshot = null;
   let logLines = [];
+  const runtime = typeof chrome !== 'undefined' && chrome.runtime?.id ? chrome.runtime : null;
+  let runtimePending = false;
+  let registeredActive = null;
+  let requestedActive = null;
+  let registeredAt = 0;
+  let workerAvailable = false;
+  let lastWorkerTick = null;
+  let runtimeError = '';
+  let lastControlAt = Date.now();
+  let lastGapSeconds = 0;
+  const realHidden = () => document.documentElement.dataset.usesNativeHidden == null ? document.hidden :
+    document.documentElement.dataset.usesNativeHidden === 'true';
+  function syncPage() {
+    const detail = JSON.stringify({ enabled: state.enabled && state.backgroundMode });
+    const queue = [window];
+    for (let i = 0; i < queue.length && i < 64; i++) {
+      try {
+        const win = queue[i];
+        // Aynı kökendeki oynatıcı çerçevelerine yalnızca mod ve saat sinyali iletilir.
+        void win.document;
+        win.dispatchEvent(new win.CustomEvent('uses-helper-v13-pulse', { detail }));
+        for (let j = 0; j < win.frames.length; j++) queue.push(win.frames[j]);
+      } catch {}
+    }
+  }
+  function syncRuntime() {
+    if (!runtime?.sendMessage || runtimePending) return;
+    const active = state.enabled && state.backgroundMode;
+    if (requestedActive === active && Date.now() - registeredAt < 15000) return;
+    requestedActive = active;
+    registeredAt = Date.now();
+    runtimePending = true;
+    try {
+      Promise.resolve(runtime.sendMessage({ type: 'USES_RUN_STATE', active })).then(reply => {
+        workerAvailable = reply?.ok === true;
+        registeredActive = workerAvailable ? active : null;
+        runtimeError = workerAvailable ? '' : 'Arka plan denetimi kaydedilemedi.';
+      }).catch(() => {
+        workerAvailable = false; registeredActive = null;
+        runtimeError = 'Uzantı bağlantısı kesildi; uzantıyı ve eğitim sekmesini yenileyin.';
+        if (state.enabled && state.backgroundMode) {
+          state.enabled = false; state.pending = null; state.message = runtimeError; save();
+        }
+      }).finally(() => { runtimePending = false; paint(lastSnapshot); });
+    } catch {
+      workerAvailable = false;
+      runtimeError = 'Uzantı bağlantısı kesildi; uzantıyı ve eğitim sekmesini yenileyin.';
+      if (state.enabled && state.backgroundMode) {
+        state.enabled = false; state.pending = null; state.message = runtimeError; save();
+      }
+      runtimePending = false;
+    }
+  }
   function save() {
     try { sessionStorage.setItem(storageKey, JSON.stringify(state)); }
     catch { storageAvailable = false; state.enabled = false; state.message = 'Tarayıcı oturum kaydı kullanılamıyor. Otomatik ilerletme durdu.'; }
+    syncPage();
+    syncRuntime();
   }
   function visible(el) {
     if (!el || !el.isConnected) return false;
@@ -49,7 +104,7 @@
     const active = rows.find(el => el.classList.contains('itemActiveStyle'));
     const routeNumber = Number(location.pathname.match(/\/(\d+)\/?$/)?.[1]);
     const lesson = lessons.find(l => l.id === active?.id) || lessons.find(l => Number(l.el.dataset.sirano) === routeNumber);
-    const s = { instance, lesson, lessons, hidden: document.hidden, key: null, resume: false,
+    const s = { instance, lesson, lessons, hidden: realHidden(), key: null, resume: false,
       question: false, end: false, nextVisible: false, nextEnabled: false, timeline: null };
     const doc = playerDocument();
     if (!doc) return s;
@@ -92,7 +147,7 @@
   shadow.innerHTML = `
     <style>
       :host{font:14px/1.45 system-ui,-apple-system,Segoe UI,sans-serif;color:#172b3a}
-      *{box-sizing:border-box}section{background:#fff;border:1px solid #cbd5df;border-radius:14px;box-shadow:0 8px 32px #0f172a26;overflow:hidden}
+      *{box-sizing:border-box}section{background:#fff;border:1px solid #cbd5df;border-radius:14px;box-shadow:0 8px 32px #0f172a26;max-height:calc(100vh - 32px);overflow:auto}
       header{display:flex;align-items:center;justify-content:space-between;padding:13px 15px;background:#edf5fa;font-weight:700}
       #minimize{background:transparent;color:#355065;padding:2px 8px;font-size:20px;border:0}
       .body{padding:15px}.body[hidden]{display:none}p{margin:0 0 9px}#lesson{font-weight:650}#status{min-height:42px}
@@ -104,15 +159,16 @@
       section[data-running=true]{border-color:#16838a}#badge{font-size:11px;font-weight:500;color:#506878}
     </style>
     <section aria-label="USES Slayt Yardımcısı">
-      <header><span>USES Slayt Yardımcısı <span id="badge">Hazır</span></span><button id="minimize" aria-label="Paneli küçült" title="Paneli küçült">−</button></header>
+      <header><span>USES Slayt Yardımcısı V1.3 <span id="badge">Hazır</span></span><button id="minimize" aria-label="Paneli küçült" title="Paneli küçült">−</button></header>
       <div class="body"><p id="lesson">Ders okunuyor…</p><p id="slide" class="muted"></p>
       <progress id="progress" max="100" value="0" aria-label="Slayt zaman çizgisi"></progress>
-      <p id="status" role="status" aria-live="polite"></p><p id="duration" class="muted"></p><p id="read-at" class="muted"></p><p id="summary" class="muted"></p>
+      <p id="status" role="status" aria-live="polite"></p><p id="duration" class="muted"></p><p id="read-at" class="muted"></p><p id="summary" class="muted"></p><p id="background-status" class="muted"></p>
       <div class="actions"><button id="start">Başlat</button><button id="stop">Durdur</button></div>
       <label><input id="auto" type="checkbox">Tamamlanınca sonraki eksik dersi aç</label>
       <label><input id="skip-questions" type="checkbox">Katılımsız mod: soruda diğer derse geç</label>
+      <label><input id="background-mode" type="checkbox">Arka planda ilerlemeye devam et</label>
       <label>Slayt sonu ek bekleme <input id="delay" type="number" min="0" max="60" step="1" aria-label="Ek bekleme saniyesi"> sn</label>
-      <p class="muted">Sorulu dersler tamamlandı sayılmaz; sonraya bırakılır. Ders sekmesini görünür tutun.</p>
+      <p class="muted">Sorulu dersler sonraya bırakılır. Bilgisayar uyanık kalmalıdır; Windows güç ayarları değiştirilmez.</p>
       <details><summary id="deferred-summary">Soru bekleyen dersler (0)</summary><p id="deferred-list"></p><button id="return-questions">İlk sorulu derse dön</button></details>
       <details><summary>Son işlemler</summary><p id="log"></p></details></div>
     </section>`;
@@ -120,6 +176,7 @@
   const $ = id => shadow.getElementById(id);
   $('auto').checked = state.autoNext;
   $('skip-questions').checked = state.skipQuestions;
+  $('background-mode').checked = state.backgroundMode;
   $('delay').value = String(state.extraMs / 1000);
   function log(message) {
     logLines = [new Date().toLocaleTimeString('tr-TR') + ' ' + message, ...logLines].slice(0, 8);
@@ -131,6 +188,17 @@
     $('lesson').textContent = s?.lesson?.title || 'Ders yükleniyor…';
     $('slide').textContent = s?.title || '';
     $('status').textContent = state.message;
+    if (!state.backgroundMode) $('background-status').textContent = 'Arka plan modu kapalı · Gizli sekmede bekler.';
+    else if (!state.enabled) $('background-status').textContent = 'Arka plan modu hazır · Başlat ile etkinleşir.';
+    else {
+      const bridge = document.documentElement.dataset.usesBackgroundActive === 'true';
+      const worker = !runtime?.sendMessage ? 'yerel test' : workerAvailable ? 'arka plan denetimi bağlı' : 'arka plan denetimi bekleniyor';
+      $('background-status').textContent = (s?.hidden ? 'Sekme arka planda' : 'Sekme önde') + ' · ' + worker +
+        (bridge ? ' · oynatıcı uyumu açık' : ' · oynatıcı katmanı yok; sayfayı yenileyin') +
+        (runtimeError ? ' · ' + runtimeError : '') +
+        (lastGapSeconds ? ' · Son kontrolde ' + lastGapSeconds + ' sn ara gözlendi; uyku veya tarayıcı duraklaması olabilir.' : '') +
+        (lastWorkerTick ? ' · Son arka plan sinyali: ' + new Date(lastWorkerTick).toLocaleTimeString('tr-TR') : '');
+    }
     const t = s?.timeline;
     $('progress').value = t && t.max > t.min ? Math.min(100, Math.max(0, 100 * (t.now - t.min) / (t.max - t.min))) : 0;
     const deferred = Object.entries(state.deferredLessons || {});
@@ -157,7 +225,7 @@
     state.pending = null;
     state.readySince = null;
     state.lastTick = Date.now();
-    state.wasHidden = document.hidden;
+    state.wasHidden = realHidden() && !state.backgroundMode;
     state.unavailableSince = null;
     // Kullanıcı tarafından yeniden başlatma, başarısız son kontrol sayacını sıfırlar.
     if (state.verification?.count >= 3) state.verification = null;
@@ -170,6 +238,13 @@
   });
   $('auto').addEventListener('change', () => { state.autoNext = $('auto').checked; save(); });
   $('skip-questions').addEventListener('change', () => { state.skipQuestions = $('skip-questions').checked; save(); });
+  $('background-mode').addEventListener('change', () => {
+    state.backgroundMode = $('background-mode').checked;
+    state.readySince = null;
+    state.wasHidden = realHidden() && !state.backgroundMode;
+    log(state.backgroundMode ? 'Arka plan modu açıldı.' : 'Arka plan modu kapatıldı.');
+    save(); tick();
+  });
   $('return-questions').addEventListener('click', () => {
     const id = Object.keys(state.deferredLessons || {})[0];
     const target = id && document.getElementById(id);
@@ -197,6 +272,10 @@
     if (busy) return;
     busy = true;
     try {
+      const now = Date.now();
+      if (now - lastControlAt > 15000) lastGapSeconds = Math.round((now - lastControlAt) / 1000);
+      lastControlAt = now;
+      syncPage();
       const s = collect(); lastSnapshot = s;
       const { state: nextState, action } = C.step(s, state, Date.now(), END_BUFFER_MS);
       state = nextState;
@@ -229,6 +308,11 @@
       log(state.message); save(); paint(lastSnapshot);
     } finally { busy = false; }
   }
+  if (runtime?.onMessage) runtime.onMessage.addListener((message, sender, respond) => {
+    if (sender.id !== runtime.id || message?.type !== 'USES_BACKGROUND_TICK') return;
+    lastWorkerTick = Date.now(); tick();
+    respond({ active: state.enabled && state.backgroundMode });
+  });
   tick();
   setInterval(tick, 500);
 })();

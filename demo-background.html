@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>V1.3 — Arka plan deneyi</title><script src="visibility.js"></script>
+<style>body{font:16px system-ui;background:#f1f5f8;color:#173044;max-width:1100px;margin:28px auto;padding:0 20px}h1{font-size:26px}.note{padding:12px;background:#def2ed;border-radius:10px}iframe{width:100%;height:350px;border:1px solid #c1d1db;border-radius:12px;background:white}li{list-style:none;padding:14px;background:white;border:1px solid #c1d1db;border-radius:8px;margin:8px 0;cursor:pointer}.itemActiveStyle{outline:2px solid #167b83}button{font:inherit;padding:8px 14px}</style></head>
+<body><h1>V1.3 · Arka planda ders geçişi</h1>
+<p class="note">Yerel deneme: oynatıcı görünürlük kontrolü ve requestAnimationFrame kullanır. Başlat'a bastıktan sonra başka sekmeye geçin. İki dersin içerikleri ilerlemeli, sorular bekleyenlere alınmalı ve yardımcı durmalıdır. Gerçek eğitim hesabı kullanılmaz.</p>
+<iframe id="iframe1" title="Arka plan test oynatıcısı" src="demo-player-background.html"></iframe>
+<ul><li id="li_1" class="egitimvideo" data-sirano="1">Arka Plan Örnek Ders 1 (45dk.) % 100</li><li id="li_2" class="egitimvideo" data-sirano="2">Arka Plan Örnek Ders 2 (60dk.) % 100</li></ul>
+<button id="reset-demo">Deneyi sıfırla</button>
+<button id="start-later">30 saniye sonra Başlat</button><p id="delayed-state"></p>
+<pre id="background-evidence"></pre>
+<script src="demo-background.js"></script><script src="core.js"></script><script src="content.demo.js"></script></body></html>

@@ -1,3 +1,16 @@
+# V1.3 doğrulaması — 22 Ekim 2026
+
+- `npm test`: **76 / 76 başarılı**; eski süre/soru/geçiş korumaları ve yeni arka plan davranışları dahil.
+- JavaScript sözdizimi kontrolleri: başarılı.
+- Gizli sekme mantığı, görünürlük/odak geri dönüşü, 15 saniyelik uyumluluk süresinin dolması, rAF iptali ve çift çağrı koruması test edildi.
+- Arka plan kayıt kapsamı, belge kimliği, sekme kapanması, gezinme, durdurma, çoklu sekme ve worker yeniden başlatma senaryoları test edildi.
+- Chrome'daki yerel görünürlük/rAF oynatıcısında iki ders otomatik ilerledi; ilk soru nedeniyle ikinci derse geçildi, iki ders de soru bekleyenlere alınınca duruldu. Tamamlanan ders sayısı **0 / 2** kaldı.
+- Deneyin geçiş kaydı gerçek görünürlüğü `gizli: false` olarak bildirdi. Bu deneme gerçek gizli/küçültülmüş pencere başarısı olarak raporlanmaz.
+- Gerçek USES sayfasına V1.3 yükleme, gerçek gizli/küçültülmüş pencere, Windows kilidi/uyku ve tam ders geçişi henüz doğrulanmadı.
+- V1.3 ZIP'i manifest, dört JavaScript dosyası, Türkçe tanıtım/kurulum/sürüm notları ve önceki sürümün yerel önizlemesini içerir. Test dosyaları eklenmez.
+
+Önceki doğrulamalar aşağıdadır.
+
 # Test sonucu — 21 Ekim 2026
 
 - Sürüm: **V1.2 alpha** (manifest: 1.2.0).

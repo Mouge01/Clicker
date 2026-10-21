@@ -2,7 +2,7 @@
 
 USES eğitimlerinde slayt sürelerini ve ders tamamlanmasını takip eden Türkçe Chrome eklentisi. Slaytın süresi dolduğunda oynatıcının İLERİ düğmesini kullanır.
 
-**V1.2 alpha:** Eklentiyi daha önce yüklediyseniz Chrome Uzantılar sayfasında bu eklentinin **Yenile** düğmesine basın, ardından eğitim sekmesini yenileyin. Eklentiyi yüklediğiniz klasörü kullanmaya devam edin.
+**V1.3 alpha:** Eklentiyi daha önce yüklediyseniz Chrome Uzantılar sayfasında bu eklentinin **Yenile** düğmesine basın, ardından eğitim sekmesini yenileyin. Eklentiyi yüklediğiniz klasörü kullanmaya devam edin. Yeni dosyalar nedeniyle uzantıyı ve eğitim sekmesini yenilemek zorunludur; panelde V1.3 yazmalıdır.
 
 ## Kurulum
 
@@ -30,21 +30,27 @@ https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#lo
 - Normal tamamlanma geçişinde sitenin **Tamamlandı** etiketi aranır. Katılımsız moddaki soru nedeniyle erteleme ayrı bir geçiştir; bitmiş ders sayısını artırmaz. İlerleme olmayan üç başarısız süre kontrolünden sonra durur; yenilemede yüzde ilerlemişse kalan süreyi yeniden bekler.
 - **Tamamlanınca sonraki eksik dersi aç** seçiliyse tamamlanan dersleri atlayarak kalan dersleri açar.
 - **Durdur** ilerletmeyi hemen durdurur; oynatıcının kendi sesini durdurmaz.
-- Ders sekmesi arka plandaysa yeni slayda geçmez ve yerel bekleme hesabını ilerletmez.
+- **Arka planda ilerlemeye devam et** açıksa gizli sekmede de süre ve İLERİ koşullarını denetler. Bu seçenek kapatılırsa gizli sekmede bekler.
+- Arka plan katmanı, oynatıcıya görünür/odaklı durum bildirir ve gizli sekmede bekleyen animasyon karelerini gerçek zaman bilgisiyle çalıştırır. Durdur düğmesi bu katmanı da devreden çıkarır.
+- Arka plan denetimi yalnızca çalışma açıkken etkin olur. Çalışma bitince, sekme kapanınca veya sayfa değişince ilgili kayıt temizlenir.
+- Panelde gerçek sekme görünürlüğü, denetleyici bağlantısı ve son arka plan sinyali gösterilir. Uzun kontrol araları olası uyku/tarayıcı duraklaması olarak bildirilir; kesin kilit/uyku teşhisi yapılmaz.
+- Windows ekran, uyku ve kilit ayarları değiştirilmez. Bilgisayarı uyanık tutmayı Windows/Caffeine üzerinden yönetin.
 - Sayfa yenilenince o sekmedeki çalışma durumunu korur. Yeni bir sekmede Başlat'a basmak gerekir.
 - Oynatıcı duraklatılmışsa slayt süresini tamamlamak için oynatıcının kendi yürüt düğmesini kullanın.
 
 ## Kapsam ve doğrulama
 
-Yalnızca `https://egitim.saglik.gov.tr/EgitimIzle/*` sayfalarında çalışır. Ek tarayıcı izni, harici kütüphane, veri aktarımı veya sunucu gerektirmez. Parola, çerez veya hesabınıza ait özel bilgileri okumaz; süre/tamamlanma değerlerini değiştirmez. Görünen ders yüzdesi kesin bir sayaç değildir; kalan süre bu yüzden tahminidir ve son karar sitenin Tamamlandı etiketidir.
+Yalnızca `https://egitim.saglik.gov.tr/EgitimIzle/*` sayfalarında çalışır. `alarms` ve `storage` izinleri arka plan denetimi için kullanılır. Harici kütüphane, veri aktarımı veya sunucu gerektirmez. Arka plan uyumluluğu aynı sitedeki ScormCourses oynatıcı çerçevelerine de uygulanır. Parola, çerez veya hesabınıza ait özel bilgileri okumaz; süre/tamamlanma değerlerini değiştirmez. Görünen ders yüzdesi kesin bir sayaç değildir; kalan süre bu yüzden tahminidir ve son karar sitenin Tamamlandı etiketidir.
 
-2026-10-21 tarihinde incelenen iki oynatıcı biçimi desteklenir: ARIA zaman çizgisi ve HTML range çizgisi. Karar mantığı testleri ve yerel oynatıcı simülasyonu bulunur. Chrome'a eklenti olarak kurulum ve gerçek USES oturumunda tam bir ders boyunca çalışma henüz uçtan uca doğrulanmamıştır. Site oynatıcısı değişirse eklenti güvenli şekilde bekler/durur.
+2026-10-21 tarihinde incelenen iki oynatıcı biçimi desteklenir: ARIA zaman çizgisi ve HTML range çizgisi. Karar mantığı testleri ve yerel oynatıcı simülasyonu bulunur. V1.2 ile gerçek Chrome üzerinde slayt ilerlemesi gözlenmiştir. V1.3 için gerçek gizli/küçültülmüş Chrome penceresi ve tam ders geçişi henüz uçtan uca doğrulanmamıştır. Site oynatıcısı değişirse eklenti güvenli şekilde bekler/durur.
 
 ## Geliştirme
 
-Node.js kuruluysa `node --test tests.cjs` ile testleri çalıştırın. npm kurulumu gerekmez.
+Node.js kuruluysa `npm test` ile testleri çalıştırın. npm kurulumu gerekmez.
 Kaynak koddan yerel simülasyon hazırlamak için önce `npm run demo:prepare` çalıştırın. Ardından bu klasörde `python -m http.server 8765 --bind 127.0.0.1` komutuyla sunucu başlatıp `http://127.0.0.1:8765/demo.html` adresini açın.
 `content.demo.js`, üretim kodunun yalnızca bölüm sonu kontrol payı 3 saniyeye düşürülmüş test kopyasıdır; manifest bunu yüklemez.
 `http://127.0.0.1:8765/demo-multi.html` iki ders arasında otomatik geçişi ve sorulu derslerin ertelenmesini gösterir.
+
+`http://127.0.0.1:8765/demo-background.html` görünürlük ve animasyon uyumluluğunu deneyen iki dersli testtir. Başlat düğmesinden sonra başka sekmeye geçilebilir. Deney kaydı, her geçiş sırasında gerçek sekmenin gizli olup olmadığını gösterir.
 
 Eklentiyi kaldırmak için Chrome Uzantılar sayfasındaki **Kaldır** düğmesini kullanın.
