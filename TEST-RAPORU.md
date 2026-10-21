@@ -6,7 +6,8 @@
 - Arka plan kayıt kapsamı, belge kimliği, sekme kapanması, gezinme, durdurma, çoklu sekme ve worker yeniden başlatma senaryoları test edildi.
 - Chrome'daki yerel görünürlük/rAF oynatıcısında iki ders otomatik ilerledi; ilk soru nedeniyle ikinci derse geçildi, iki ders de soru bekleyenlere alınınca duruldu. Tamamlanan ders sayısı **0 / 2** kaldı.
 - Deneyin geçiş kaydı gerçek görünürlüğü `gizli: false` olarak bildirdi. Bu deneme gerçek gizli/küçültülmüş pencere başarısı olarak raporlanmaz.
-- Gerçek USES sayfasına V1.3 yükleme, gerçek gizli/küçültülmüş pencere, Windows kilidi/uyku ve tam ders geçişi henüz doğrulanmadı.
+- Gerçek USES sayfasında V1.3 paneli, bağlı arka plan denetleyicisi ve açık oynatıcı uyumu gözlendi. Sorulu dersler tamamlandı sayılmadan otomatik ders değişimi ve yeni derste içerik ilerlemesi doğrulandı. Hesaba ait ders adları, oranlar ve işlem zamanları bu rapora kaydedilmedi.
+- Kullanıcı Chrome penceresini küçülttüğünü bildirdikten sonra ilerleme gözlendi; son panel okuması gerçek sekmeyi önde gösterdi. Bu nedenle kesintisiz gizli/küçültülmüş pencere çalışması, Windows kilidi/uyku ve tam eğitim tamamlanması henüz doğrulanmış sayılmaz.
 - V1.3 ZIP'i manifest, dört JavaScript dosyası, Türkçe tanıtım/kurulum/sürüm notları ve önceki sürümün yerel önizlemesini içerir. Test dosyaları eklenmez.
 
 Önceki doğrulamalar aşağıdadır.

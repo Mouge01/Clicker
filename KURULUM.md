@@ -42,7 +42,7 @@ https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#lo
 
 Yalnızca `https://egitim.saglik.gov.tr/EgitimIzle/*` sayfalarında çalışır. `alarms` ve `storage` izinleri arka plan denetimi için kullanılır. Harici kütüphane, veri aktarımı veya sunucu gerektirmez. Arka plan uyumluluğu aynı sitedeki ScormCourses oynatıcı çerçevelerine de uygulanır. Parola, çerez veya hesabınıza ait özel bilgileri okumaz; süre/tamamlanma değerlerini değiştirmez. Görünen ders yüzdesi kesin bir sayaç değildir; kalan süre bu yüzden tahminidir ve son karar sitenin Tamamlandı etiketidir.
 
-2026-10-21 tarihinde incelenen iki oynatıcı biçimi desteklenir: ARIA zaman çizgisi ve HTML range çizgisi. Karar mantığı testleri ve yerel oynatıcı simülasyonu bulunur. V1.2 ile gerçek Chrome üzerinde slayt ilerlemesi gözlenmiştir. V1.3 için gerçek gizli/küçültülmüş Chrome penceresi ve tam ders geçişi henüz uçtan uca doğrulanmamıştır. Site oynatıcısı değişirse eklenti güvenli şekilde bekler/durur.
+2026-10-21 tarihinde incelenen iki oynatıcı biçimi desteklenir: ARIA zaman çizgisi ve HTML range çizgisi. Karar mantığı testleri ve yerel oynatıcı simülasyonu bulunur. V1.3 ile gerçek Chrome üzerinde panel, arka plan denetleyicisi bağlantısı, slayt ilerleme, soru erteleme ve otomatik ders değişimi gözlenmiştir. Son görünürlük okuması sekmeyi önde gösterdiğinden gerçek gizli/küçültülmüş Chrome penceresinde kesintisiz çalışma henüz doğrulanmış sayılmaz. Site oynatıcısı değişirse eklenti güvenli şekilde bekler/durur.
 
 ## Geliştirme
 

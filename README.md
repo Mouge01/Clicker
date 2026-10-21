@@ -45,7 +45,7 @@ Ayrıntılı davranış ve güncelleme adımları: [KURULUM.md](KURULUM.md).
 
 Kontrol paneli yalnızca `https://egitim.saglik.gov.tr/EgitimIzle/*` adreslerinde çalışır. Arka plan uyumluluk katmanı aynı kökendeki `ScormCourses` çerçevelerine de uygulanır. Ders listesi ve oynatıcı kontrollerini kullanır. Sitenin süre ve tamamlanma değerlerini değiştirmez; soru bekleyen veya süresi eksik dersleri tamamlandı saymaz.
 
-**Deneme sürümü:** 76 davranış testi geçti. Yerel iki dersli senaryoda içerik ilerleme, soru erteleme ve ders geçişi görüldü. Deneme kaydı sekmeyi görünür gösterdiği için gerçek gizli/küçültülmüş pencere doğrulaması tamamlanmış sayılmaz. Gerçek USES sayfasında V1.3 olarak test edilmelidir.
+**Deneme sürümü:** 76 davranış testi geçti. Yerel iki dersli senaryoda içerik ilerleme, soru erteleme ve ders geçişi görüldü. Deneme kaydı sekmeyi görünür gösterdiği için gerçek gizli/küçültülmüş pencere doğrulaması tamamlanmış sayılmaz. Gerçek USES sayfasında V1.3 paneli, denetleyici bağlantısı, soru erteleme, otomatik ders geçişi ve yeni derste ilerleme gözlendi. Son görünürlük okuması sekmeyi önde gösterdi; küçültülmüş pencerede kesintisiz çalışma ayrıca doğrulanmalıdır.
 
 Bu sürüm Windows güç veya kilit ayarlarını değiştirmez. İşletim sistemi uyurken, bilgisayar kilitliyken veya Chrome sekmeyi tamamen dondurup bellekten kaldırdığında kesintisiz çalışacağı garanti edilmez. Arka plan denetleyicisi beklenmedik şekilde sonlanırsa 30 saniyelik kurtarma alarmı yeniden kontrol eder; Chrome bu alarmı geciktirebilir.
 
