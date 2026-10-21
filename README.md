@@ -2,7 +2,7 @@
 
 **V1.2 alpha** · Chrome eklentisi
 
-USES eğitim sayfasında slayt sürelerini ve derslerin tamamlanma durumunu takip eder. Katılımsız modda sorulu dersi sonraya bırakıp diğer uygun derse geçebilir.
+Sağlık Bakanlığı USES eğitimlerini takip eden kullanıcılar için hazırlanmış Türkçe Chrome eklentisidir. Slaytların süresini bekler, dersin tamamlanma durumunu kontrol eder ve uygun dersler arasında otomatik geçiş yapar. Katılımsız modda soru bulunan dersleri daha sonra yanıtlamanız için bekleyenlere alır.
 
 ![Katılımsız modun yerel simülasyondaki görünümü](preview.png)
 
@@ -18,7 +18,7 @@ USES eğitim sayfasında slayt sürelerini ve derslerin tamamlanma durumunu taki
 
 ## Chrome'a kurulum
 
-1. Releases bölümündeki `uses-slayt-yardimcisi-v1.2-alpha.zip` paketini indirip bir klasöre çıkarın.
+1. GitHub sayfasındaki **Sürümler** bölümünden `uses-slayt-yardimcisi-v1.2-alpha.zip` paketini indirip bir klasöre çıkarın.
 2. Chrome'da `chrome://extensions` adresini açın ve **Geliştirici modu**nu etkinleştirin.
 3. **Paketlenmemiş öğe yükle** ile `manifest.json` içeren klasörü seçin.
 4. USES eğitim sekmesini yenileyip panelde **Başlat**'a basın.
@@ -27,9 +27,16 @@ Bilgisayar başından ayrılmadan önce **Katılımsız mod: soruda diğer derse
 
 Ayrıntılı davranış ve güncelleme adımları: [KURULUM.md](KURULUM.md).
 
-## Kapsam
+## Gizlilik
 
-Yalnızca `https://egitim.saglik.gov.tr/EgitimIzle/*` adreslerinde çalışır. Harici sunucu, API anahtarı veya ek tarayıcı izni gerektirmez. Görünür sayfa kontrollerini kullanır; parola/çerez okumaz ve LMS süre ya da tamamlanma değerlerini değiştirmez. Sorulu veya süresi eksik dersleri tamamlandı saymaz.
+- Hesap bilgisi, parola, çerez veya kişisel iletişim bilgisi toplamaz.
+- Harici bir hizmete veri göndermez; yapay zekâ bağlantısı veya anahtar gerektirmez.
+- Yenilemeden sonra devam edebilmek için çalışma ayarlarını, ders kimliklerini, soru bekleyen derslerin adlarını ve zaman bilgilerini yalnızca açık sekmenin oturum alanında tutar.
+- Ayrı bir kullanıcı hesabı veya ek tarayıcı izni istemez.
+
+## Çalışma alanı
+
+Yalnızca `https://egitim.saglik.gov.tr/EgitimIzle/*` adreslerinde çalışır. Sayfada görünen ders listesi ve oynatıcı kontrollerini kullanır. Sitenin süre ve tamamlanma değerlerini değiştirmez; soru bekleyen veya süresi eksik dersleri tamamlandı saymaz.
 
 **Alpha durumu:** Yerel simülasyonlar ve 51 davranış testi geçti. Gerçek Chrome/USES üzerinde tam ders akışı henüz uçtan uca doğrulanmadı. Site oynatıcısı değiştiğinde bekleme veya durma gerekebilir.
 

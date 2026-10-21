@@ -1,15 +1,15 @@
 # USES Slayt Yardımcısı
 
-Chrome için yerel eklenti. Gözlemlenen USES oynatıcısındaki gerçek İLERİ düğmesine tıklar.
+USES eğitimlerinde slayt sürelerini ve ders tamamlanmasını takip eden Türkçe Chrome eklentisi. Slaytın süresi dolduğunda oynatıcının İLERİ düğmesini kullanır.
 
-**V1.2 alpha:** Eklentiyi daha önce yüklediyseniz Chrome Uzantılar sayfasında bu eklentinin **Yenile** düğmesine basın, ardından eğitim sekmesini yenileyin. Aynı Clicker klasörü kullanılmaya devam eder.
+**V1.2 alpha:** Eklentiyi daha önce yüklediyseniz Chrome Uzantılar sayfasında bu eklentinin **Yenile** düğmesine basın, ardından eğitim sekmesini yenileyin. Eklentiyi yüklediğiniz klasörü kullanmaya devam edin.
 
 ## Kurulum
 
 1. Chrome'da adres çubuğuna `chrome://extensions` yazın.
 2. Sağ üstte **Geliştirici modu**nu açın.
 3. **Paketlenmemiş öğe yükle** düğmesine basın.
-4. `manifest.json` dosyasını içeren **Clicker** klasörünü seçin.
+4. `manifest.json` dosyasını içeren **eklenti klasörünü** seçin.
 5. USES eğitim sekmesini bir kez yenileyin. Gerekirse hesabınıza kendiniz giriş yapın.
 6. Ders açıldığında sağ alttaki panelden **Başlat** düğmesine basın.
 
@@ -36,9 +36,9 @@ https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#lo
 
 ## Kapsam ve doğrulama
 
-Yalnızca `https://egitim.saglik.gov.tr/EgitimIzle/*` sayfalarında çalışır. Ek tarayıcı izni, harici kütüphane, veri aktarımı veya sunucu gerektirmez. Parola, çerez ve gizli LMS durumunu okumaz; süre/tamamlanma değerlerini değiştirmez. Görünen ders yüzdesi kesin bir sayaç değildir; kalan süre bu yüzden tahminidir ve son karar sitenin Tamamlandı etiketidir.
+Yalnızca `https://egitim.saglik.gov.tr/EgitimIzle/*` sayfalarında çalışır. Ek tarayıcı izni, harici kütüphane, veri aktarımı veya sunucu gerektirmez. Parola, çerez veya hesabınıza ait özel bilgileri okumaz; süre/tamamlanma değerlerini değiştirmez. Görünen ders yüzdesi kesin bir sayaç değildir; kalan süre bu yüzden tahminidir ve son karar sitenin Tamamlandı etiketidir.
 
-2026-10-21 tarihinde incelenen iki oynatıcı biçimi desteklenir: ARIA zaman çizgisi ve HTML range çizgisi. Karar mantığı testleri ve yerel oynatıcı simülasyonu bulunur. Chrome'a gerçek eklenti olarak yükleme ve tam ders boyunca çalışma, bu oturumda Chrome bağlantısı olmadığı için doğrulanamamıştır. Site oynatıcısı değişirse eklenti güvenli şekilde bekler/durur.
+2026-10-21 tarihinde incelenen iki oynatıcı biçimi desteklenir: ARIA zaman çizgisi ve HTML range çizgisi. Karar mantığı testleri ve yerel oynatıcı simülasyonu bulunur. Chrome'a eklenti olarak kurulum ve gerçek USES oturumunda tam bir ders boyunca çalışma henüz uçtan uca doğrulanmamıştır. Site oynatıcısı değişirse eklenti güvenli şekilde bekler/durur.
 
 ## Geliştirme
 

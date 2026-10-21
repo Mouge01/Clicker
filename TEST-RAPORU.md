@@ -33,4 +33,4 @@ Simülasyon gerçek eğitim hesabını kullanmaz. Simülasyonda 1,2 saniyelik sl
 
 ## Henüz doğrulanmayan
 
-Chrome'a eklenti olarak kurulum, gerçek USES sayfasında eklenti olarak çalışma ve tam bir dersin süre boyunca tamamlanması. Bu oturumda Chrome tarayıcı bağlantısı bulunmadığından bu adımlar kullanıcı kurulumundan sonra doğrulanmalıdır.
+Chrome'a eklenti olarak kurulum, gerçek USES sayfasında eklenti olarak çalışma ve tam bir dersin süre boyunca tamamlanması. Bu adımlar, eklenti kurulduktan sonra gerçek USES oturumunda doğrulanmalıdır.
