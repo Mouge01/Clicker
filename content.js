@@ -3,7 +3,8 @@
   'use strict';
   if (window.top !== window || document.getElementById('uses-slide-helper')) return;
   const C = globalThis.UsesSlideCore;
-  if (!C) return;
+  const R = globalThis.UsesResume;
+  if (!C || !R) return;
   const course = location.pathname.replace(/\/\d+\/?$/, '').replace(/\/$/, '');
   const storageKey = 'uses-slide-helper:v1:' + course;
   const instance = crypto.randomUUID();
@@ -82,16 +83,22 @@
     return visible(el) && !el.disabled && el.getAttribute('aria-disabled') !== 'true' &&
       !el.classList.contains('disabled') && el.ownerDocument.defaultView.getComputedStyle(el).pointerEvents !== 'none';
   }
-  function playerDocument() {
+  function playerDocuments() {
+    const docs = [];
     try {
       const doc = document.getElementById('iframe1')?.contentDocument;
-      if (!doc?.body) return null;
-      if (doc.querySelector('#slide, #message-window-slide, button')) return doc;
-      for (const f of doc.querySelectorAll('iframe')) {
-        try { if (f.contentDocument?.querySelector('#slide')) return f.contentDocument; } catch {}
+      if (!doc?.body) return docs;
+      docs.push(doc);
+      for (let i = 0; i < docs.length && i < 32; i++) {
+        for (const frame of docs[i].querySelectorAll('iframe')) {
+          try {
+            const child = visible(frame) && frame.contentDocument;
+            if (child?.body && !docs.includes(child) && docs.length < 32) docs.push(child);
+          } catch {}
+        }
       }
-      return doc;
-    } catch { return null; }
+    } catch {}
+    return docs;
   }
   function hash(text) {
     let h = 2166136261;
@@ -106,15 +113,11 @@
     const lesson = lessons.find(l => l.id === active?.id) || lessons.find(l => Number(l.el.dataset.sirano) === routeNumber);
     const s = { instance, lesson, lessons, hidden: realHidden(), key: null, resume: false,
       question: false, end: false, nextVisible: false, nextEnabled: false, timeline: null };
-    const doc = playerDocument();
-    if (!doc) return s;
-    const prompt = doc.getElementById('message-window-slide');
-    const buttons = [...doc.querySelectorAll('button')].filter(visible);
-    if (prompt && visible(prompt) && /kaldığınız yerden/i.test(prompt.textContent))
-      s.resumeEl = [...prompt.querySelectorAll('button')].find(el => C.clean(el.textContent) === 'Evet');
-    if (!s.resumeEl && buttons.some(el => C.clean(el.textContent) === 'Yeniden Başlat'))
-      s.resumeEl = buttons.find(el => C.clean(el.textContent) === 'Devam');
+    const docs = playerDocuments();
+    s.resumeEl = [document, ...docs].map(doc => R.find(doc, visible, enabled)).find(Boolean);
     s.resume = !!s.resumeEl;
+    const doc = docs.find(doc => visible(doc.getElementById('slide'))) || docs[0];
+    if (!doc) return s;
     const slide = doc.getElementById('slide');
     if (slide && visible(slide)) {
       const text = slide.innerText || slide.textContent;
@@ -290,7 +293,7 @@
         latest.nextEl.click();
       } else if (action.kind === 'resume') {
         const latest = collect();
-        if (latest.resumeEl && enabled(latest.resumeEl)) { log('Kayıtlı konum açıldı.'); latest.resumeEl.click(); }
+        if (latest.resumeEl && enabled(latest.resumeEl)) { log('Devam penceresi: kayıtlı konum seçildi.'); latest.resumeEl.click(); }
         else { state.pending = null; save(); }
       } else if (action.kind === 'verify') {
         log(action.message);

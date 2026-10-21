@@ -4,7 +4,7 @@ from pathlib import Path
 from zipfile import ZipFile, ZIP_DEFLATED
 
 ROOT = Path(__file__).resolve().parent
-FILES = ('manifest.json', 'core.js', 'content.js', 'background.js', 'visibility.js', 'README.md', 'KURULUM.md', 'CHANGELOG.md', 'preview.png')
+FILES = ('manifest.json', 'core.js', 'resume.js', 'content.js', 'background.js', 'visibility.js', 'README.md', 'KURULUM.md', 'CHANGELOG.md', 'preview.png')
 manifest = json.loads((ROOT / 'manifest.json').read_text(encoding='utf-8'))
 assert manifest['version'] == '1.3.0'
 assert manifest['version_name'] == 'V1.3 alpha'

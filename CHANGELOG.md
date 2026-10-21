@@ -2,6 +2,8 @@
 
 ## V1.3 alpha — 22 Ekim 2026
 
+- Yarım kalan dersin devam penceresinde otomatik **Evet** seçimi güçlendirildi: Türkçe büyük harf, düğme/input/ARIA biçimleri ve iç içe oynatıcı çerçeveleri desteklenir.
+- Devam seçimi geçiş doğrulamasını bekler; gizli/pasif düğmelere ve ilgisiz onay pencerelerine tıklamaz. 87 otomatik test ve 16 tarayıcı DOM testi geçti; kayıtlı slayda dönüş yerel simülasyonda görüldü.
 - Kullanıcı tarafından kapatılabilen arka planda ilerleme modu.
 - Eğitim ve SCORM çerçevelerinde, çalışma açıkken görünürlük/odak uyumluluğu.
 - Gizli sekmede bekleyen animasyon karelerine gerçek zamanlı saat desteği.

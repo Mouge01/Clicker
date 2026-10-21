@@ -94,6 +94,27 @@ test('devam istemi yalnızca kayıtlı konum seçeneğini açar', () => {
   assert.equal(a.action.kind, 'resume');
   assert.equal(C.step(snapshot(), a.state, 2000).state.pending, null);
 });
+
+test('devam penceresi kapanana kadar Evet tekrar tıklanmaz', () => {
+  const s = snapshot({ resume: true, key: null });
+  const a = C.step(s, running(), 1000);
+  assert.equal(C.step(s, a.state, 2000).action.kind, 'wait');
+  const b = C.step(s, a.state, 22000);
+  assert.equal(b.action.kind, 'pause');
+  assert.equal(b.state.enabled, false);
+});
+
+test('otomasyon kapalıyken devam penceresi kendiliğinden yanıtlanmaz', () => {
+  assert.equal(C.step(snapshot({ resume: true, key: null }), C.initial(), 1000).action.kind, 'idle');
+});
+
+test('devam penceresinden sonraki soru katılımsız modda ertelenir', () => {
+  const a = C.step(snapshot({ resume: true, key: null }), running(), 1000);
+  const b = C.step(snapshot({ question: true }), a.state, 2000);
+  assert.equal(b.action.kind, 'switch');
+  assert.equal(b.action.targetId, other.id);
+  assert.equal(b.state.deferredLessons[lesson.id].title, lesson.title);
+});
 test('arka plandaki sekmede işlem yapılmaz', () => {
   assert.equal(ready(snapshot({ hidden: true }), { backgroundMode: false }).action.kind, 'wait');
 });

@@ -1,6 +1,8 @@
 # V1.3 doğrulaması — 22 Ekim 2026
 
-- `npm test`: **76 / 76 başarılı**; eski süre/soru/geçiş korumaları ve yeni arka plan davranışları dahil.
+- `npm test`: **87 / 87 başarılı**; eski süre/soru/geçiş korumaları, arka plan davranışları ve devam istemi senaryoları dahil.
+- `demo-resume.html`, gerçek Chrome DOM'unda **16 / 16 başarılı**: Türkçe büyük harf, input/ARIA/bağlantı düğmeleri, Devam/Yeniden Başlat, gizli/pasif seçenekler, farklı onay pencereleri ve sınav kontrolleri.
+- Aynı yerel sayfada panelden Başlat seçilince, dış çerçevede başka düğme bulunsa da iç içe çerçevedeki devam istemi otomatik EVET ile kapandı. Kayıtlı slayt açıldı ve panel çalışmayı sürdürdü. Bu ek davranış güncellenmiş uzantı olarak gerçek USES'te henüz denenmedi.
 - JavaScript sözdizimi kontrolleri: başarılı.
 - Gizli sekme mantığı, görünürlük/odak geri dönüşü, 15 saniyelik uyumluluk süresinin dolması, rAF iptali ve çift çağrı koruması test edildi.
 - Arka plan kayıt kapsamı, belge kimliği, sekme kapanması, gezinme, durdurma, çoklu sekme ve worker yeniden başlatma senaryoları test edildi.

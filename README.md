@@ -14,6 +14,7 @@ Sağlık Bakanlığı USES eğitimlerini takip eden kullanıcılar için hazırl
 - Ders süresi ile içerik tamamlanmasını ayrı gösterir.
 - Bölüm sonunda gereken süreyi bekleyip sayfayı yeniler; yeni yüzde ve **Tamamlandı** etiketini kontrol eder.
 - Tamamlanan dersin ardından sonraki eksik dersi açar.
+- Çalışırken yarım kalan dersteki **Kaldığınız yerden devam etmek istiyor musunuz?** penceresine otomatik **Evet** der. İç içe oynatıcılar, büyük harfli etiketler ve **Devam** biçimi desteklenir.
 - **Katılımsız mod** açıkken sorulu dersi bekleyenlere kaydeder; aynı dersler arasında döngü oluşturmaz.
 - Bekleyen sorulu derse tek düğmeyle dönülebilir. Soruları otomatik yanıtlamaz.
 - Başlat/durdur, ek bekleme süresi ve oturum boyunca durum koruma bulunur.
@@ -45,7 +46,7 @@ Ayrıntılı davranış ve güncelleme adımları: [KURULUM.md](KURULUM.md).
 
 Kontrol paneli yalnızca `https://egitim.saglik.gov.tr/EgitimIzle/*` adreslerinde çalışır. Arka plan uyumluluk katmanı aynı kökendeki `ScormCourses` çerçevelerine de uygulanır. Ders listesi ve oynatıcı kontrollerini kullanır. Sitenin süre ve tamamlanma değerlerini değiştirmez; soru bekleyen veya süresi eksik dersleri tamamlandı saymaz.
 
-**Deneme sürümü:** 76 davranış testi geçti. Yerel iki dersli senaryoda içerik ilerleme, soru erteleme ve ders geçişi görüldü. Deneme kaydı sekmeyi görünür gösterdiği için gerçek gizli/küçültülmüş pencere doğrulaması tamamlanmış sayılmaz. Gerçek USES sayfasında V1.3 paneli, denetleyici bağlantısı, soru erteleme, otomatik ders geçişi ve yeni derste ilerleme gözlendi. Son görünürlük okuması sekmeyi önde gösterdi; küçültülmüş pencerede kesintisiz çalışma ayrıca doğrulanmalıdır.
+**Deneme sürümü:** 87 davranış testi ve Chrome'da 16 devam penceresi DOM testi geçti. İç içe oynatıcıdaki devam penceresinin otomatik kapanıp kayıtlı slaydın açılması yerel simülasyonda doğrulandı. Yerel iki dersli senaryoda içerik ilerleme, soru erteleme ve ders geçişi görüldü. Deneme kaydı sekmeyi görünür gösterdiği için gerçek gizli/küçültülmüş pencere doğrulaması tamamlanmış sayılmaz. Gerçek USES sayfasında V1.3 paneli, denetleyici bağlantısı, soru erteleme, otomatik ders geçişi ve yeni derste ilerleme gözlendi. Son görünürlük okuması sekmeyi önde gösterdi; küçültülmüş pencerede kesintisiz çalışma ayrıca doğrulanmalıdır.
 
 Bu sürüm Windows güç veya kilit ayarlarını değiştirmez. İşletim sistemi uyurken, bilgisayar kilitliyken veya Chrome sekmeyi tamamen dondurup bellekten kaldırdığında kesintisiz çalışacağı garanti edilmez. Arka plan denetleyicisi beklenmedik şekilde sonlanırsa 30 saniyelik kurtarma alarmı yeniden kontrol eder; Chrome bu alarmı geciktirebilir.
 
@@ -62,6 +63,7 @@ python -m http.server 8765 --bind 127.0.0.1
 - Tek ders: `http://127.0.0.1:8765/demo.html`
 - İki ders ve soru erteleme: `http://127.0.0.1:8765/demo-multi.html`
 - Görünürlük/animasyon ve arka plan geçiş deneyi: `http://127.0.0.1:8765/demo-background.html`
+- Devam pencereleri ve iç içe oynatıcı: `http://127.0.0.1:8765/demo-resume.html` (16 DOM testi; panelden Başlat ile otomatik Evet deneyi)
 
 Simülasyonlar gerçek eğitim hesabına bağlanmaz. Kurulum paketini yeniden üretmek için `python build-release.py` çalıştırın.
 

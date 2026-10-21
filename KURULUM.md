@@ -23,7 +23,8 @@ https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#lo
 - **Katılımsız mod: soruda diğer derse geç** varsayılan olarak açıktır. Sorulu dersi **soru bekleyenler** listesine alır; diğer uygun derse geçer. Soruyu yanıtlamaz ve dersi tamamlanmış saymaz.
 - Kullanıcı varlığını otomatik algılamaz; katılımsız modu kullanıcı seçer. Modu kapatırsanız soruda durur. Soruyu kendiniz yanıtlayıp sonraki içerik slaydına geçin; sonra **Başlat**'a basın.
 - Soru bekleyen dersleri aynı turda tekrar seçmez. Gezilebilecek başka ders kalmadığında bekleyenlerin sayısını gösterip durur; dersler arasında sonsuz döngü yapmaz.
-- **Soru bekleyen dersler** bölümündeki **İlk sorulu derse dön** düğmesi katılımsız modu kapatıp ilk bekleyen dersi açar. Döndüğünüzde devam istemini ve soruları kendiniz tamamlayabilirsiniz.
+- Çalışma açıkken yarım kalan derse girildiğinde **Kaldığınız yerden devam etmek istiyor musunuz?** penceresindeki **Evet** otomatik seçilir. **Devam / Yeniden Başlat** biçimindeki devam penceresi de desteklenir. Eklenti durdurulmuşsa pencereye dokunmaz.
+- **Soru bekleyen dersler** bölümündeki **İlk sorulu derse dön** düğmesi katılımsız modu kapatıp ilk bekleyen dersi açar ve otomasyonu durdurur. Bu durumda devam istemini ve soruları kendiniz tamamlayabilirsiniz.
 - Panelde süre koşulu, tahmini kalan süre ve son sayfa okuma zamanı ayrı gösterilir. Yüzde 100 süre koşulunu; Tamamlandı etiketi hem süre hem içerik tamamlanmasını doğrular.
 - Bölüm sonunda listedeki ders süresi ve yüzdesinden tahmini kalan süreyi hesaplar. Süre dolunca 1 dakika kontrol payıyla bekler; sayfayı tamamen yeniler ve yeni yüzdeyi okur. İçerik slaytları oynarken periyodik yenileme yapmaz.
 - Her yenilemede kalan süreyi yeni site yüzdesine göre baştan hesaplar; eski yerel sayacı sunucu onayı olarak kabul etmez.
@@ -50,6 +51,8 @@ Node.js kuruluysa `npm test` ile testleri çalıştırın. npm kurulumu gerekmez
 Kaynak koddan yerel simülasyon hazırlamak için önce `npm run demo:prepare` çalıştırın. Ardından bu klasörde `python -m http.server 8765 --bind 127.0.0.1` komutuyla sunucu başlatıp `http://127.0.0.1:8765/demo.html` adresini açın.
 `content.demo.js`, üretim kodunun yalnızca bölüm sonu kontrol payı 3 saniyeye düşürülmüş test kopyasıdır; manifest bunu yüklemez.
 `http://127.0.0.1:8765/demo-multi.html` iki ders arasında otomatik geçişi ve sorulu derslerin ertelenmesini gösterir.
+
+`http://127.0.0.1:8765/demo-resume.html` 16 devam penceresi DOM testini çalıştırır. Panelden **Başlat** seçilince iç içe çerçevedeki **EVET** otomatik seçilir ve kayıtlı slayt açılır.
 
 `http://127.0.0.1:8765/demo-background.html` görünürlük ve animasyon uyumluluğunu deneyen iki dersli testtir. Başlat düğmesinden sonra başka sekmeye geçilebilir. Deney kaydı, her geçiş sırasında gerçek sekmenin gizli olup olmadığını gösterir.
 

@@ -16,7 +16,7 @@
     "match_about_blank": true
   }, {
     "matches": ["https://egitim.saglik.gov.tr/EgitimIzle/*"],
-    "js": ["core.js", "content.js"],
+    "js": ["core.js", "resume.js", "content.js"],
     "run_at": "document_idle",
     "all_frames": false
   }]
