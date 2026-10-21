@@ -2,7 +2,7 @@
 
 USES eğitimlerinde slayt sürelerini ve ders tamamlanmasını takip eden Türkçe Chrome eklentisi. Slaytın süresi dolduğunda oynatıcının İLERİ düğmesini kullanır.
 
-**V1.3 alpha:** Eklentiyi daha önce yüklediyseniz Chrome Uzantılar sayfasında bu eklentinin **Yenile** düğmesine basın, ardından eğitim sekmesini yenileyin. Eklentiyi yüklediğiniz klasörü kullanmaya devam edin. Yeni dosyalar nedeniyle uzantıyı ve eğitim sekmesini yenilemek zorunludur; panelde V1.3 yazmalıdır.
+**V1.3.1 alpha:** Eklentiyi daha önce yüklediyseniz güncel ZIP'in dosyalarını yüklediğiniz klasöre çıkarın. Chrome Uzantılar sayfasında bu eklentinin **Yenile** düğmesine basın, ardından eğitim sekmesini yenileyin. Panelde **V1.3.1** yazmalıdır; gerekirse **Başlat** seçin. Kaynak klasörü doğrudan kullanıyorsanız dosyalar güncellendikten sonra bu iki yenileme adımı yeterlidir.
 
 ## Kurulum
 
@@ -20,6 +20,7 @@ https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#lo
 
 - Zaman çizgisi tamamlanmadan ve İLERİ etkinleşmeden tıklamaz. Varsayılan ek bekleme 2 saniyedir.
 - Her tıklamadan sonra slaydın değiştiğini kontrol eder. Geçiş 20 saniyede doğrulanmazsa durur.
+- Sayfa yenilenince önceki belgenin slayt/devam tıklamasını beklemeyi bırakır; yeni devam istemini ele alır. Sayfanın tamamı yenilenmeden değişen derslerde yeni içerik veya devam penceresiyle ders geçişini doğrular. Yalnızca ders satırının değişmesi yeterli sayılmaz.
 - **Katılımsız mod: soruda diğer derse geç** varsayılan olarak açıktır. Sorulu dersi **soru bekleyenler** listesine alır; diğer uygun derse geçer. Soruyu yanıtlamaz ve dersi tamamlanmış saymaz.
 - Kullanıcı varlığını otomatik algılamaz; katılımsız modu kullanıcı seçer. Modu kapatırsanız soruda durur. Soruyu kendiniz yanıtlayıp sonraki içerik slaydına geçin; sonra **Başlat**'a basın.
 - Soru bekleyen dersleri aynı turda tekrar seçmez. Gezilebilecek başka ders kalmadığında bekleyenlerin sayısını gösterip durur; dersler arasında sonsuz döngü yapmaz.
@@ -47,7 +48,7 @@ Yalnızca `https://egitim.saglik.gov.tr/EgitimIzle/*` sayfalarında çalışır.
 
 ## Geliştirme
 
-Node.js kuruluysa `npm test` ile testleri çalıştırın. npm kurulumu gerekmez.
+Node.js 24.15+ (24.x) ile önce `npm ci`, ardından `npm test` çalıştırın. jsdom yalnızca terminaldeki DOM testleri içindir; kurulum paketinde bulunmaz ve gerçek eğitim hesabına bağlanmaz.
 Kaynak koddan yerel simülasyon hazırlamak için önce `npm run demo:prepare` çalıştırın. Ardından bu klasörde `python -m http.server 8765 --bind 127.0.0.1` komutuyla sunucu başlatıp `http://127.0.0.1:8765/demo.html` adresini açın.
 `content.demo.js`, üretim kodunun yalnızca bölüm sonu kontrol payı 3 saniyeye düşürülmüş test kopyasıdır; manifest bunu yüklemez.
 `http://127.0.0.1:8765/demo-multi.html` iki ders arasında otomatik geçişi ve sorulu derslerin ertelenmesini gösterir.

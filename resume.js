@@ -9,7 +9,7 @@
       .normalize('NFD').replace(/[\u0300-\u036f\uE000-\uF8FF]/g, '')
       .replace(/[^a-z0-9]+/g, ' ').trim();
   }
-  const isPrompt = text => /\bkaldiginiz yerden\b/.test(normalize(text)) && /\bdevam\b/.test(normalize(text));
+  const isPrompt = text => /\bkaldigi(?:niz|miz|n|m) (?:yerden|noktadan)\b/.test(normalize(text)) && /\bdevam\b/.test(normalize(text));
   function choiceIndex(text, labels, legacyDialog = false) {
     const names = labels.map(normalize);
     const legacy = legacyDialog && names.includes('yeniden baslat') && names.includes('devam');
@@ -20,31 +20,44 @@
     }
     return -1;
   }
-  function find(doc, visible, enabled) {
+  function renderedText(scope, visible) {
+    if (typeof scope.innerText === 'string') return scope.innerText;
+    // Yerleşim API'si olmayan test DOM'larında da gizli içerik isteme dahil edilmez.
+    const read = node => node.nodeType === 3 ? node.textContent : node.nodeType !== 1 ||
+      /^(SCRIPT|STYLE|TEMPLATE|NOSCRIPT)$/.test(node.tagName) || !visible(node) ? '' :
+      [...node.childNodes].map(read).join(' ');
+    return read(scope);
+  }
+  function inspect(doc, visible) {
     const scopes = new Set(doc.querySelectorAll(dialogs));
     // Kimliği olmayan oynatıcılarda düğmenin yakın çevresini incele; bütün slaydı tarama.
     for (const button of doc.querySelectorAll(controls)) {
       const label = normalize(button.getAttribute('aria-label') || button.textContent || button.value);
       if (!['evet', 'devam', 'devam et', 'kaldigim yerden devam et'].includes(label) || !visible(button)) continue;
       for (let el = button.parentElement, depth = 0; el && depth < 8; el = el.parentElement, depth++) {
-        if (el === doc.body || el === doc.documentElement || el.id === 'slide') break;
+        if (el === doc.body || el === doc.documentElement) break;
         scopes.add(el);
-        if (el.matches(dialogs)) break;
+        if (el.matches(dialogs) || el.id === 'slide') break;
       }
     }
     for (const scope of scopes) {
-      if (!visible(scope) || scope.querySelector('#slide') || scope.querySelector(questions)) continue;
+      if (!visible(scope) || [...scope.querySelectorAll(questions)].some(visible)) continue;
+      if (!scope.matches(dialogs) && [...scope.querySelectorAll('#slide')].some(visible)) continue;
       if (!scope.matches(dialogs) && scope.querySelector(dialogs)) continue;
-      const text = scope.innerText || scope.textContent || '';
+      const text = renderedText(scope, visible);
       if (text.length > 1500) continue;
-      const buttons = [...scope.querySelectorAll(controls)].filter(el => visible(el) && enabled(el));
+      const buttons = [...scope.querySelectorAll(controls)].filter(visible);
       const labels = buttons.map(el => el.getAttribute('aria-label') || el.textContent || el.value || '');
       const index = choiceIndex(text, labels, scope.matches(dialogs));
-      if (index !== -1) return buttons[index];
+      if (index !== -1) return { button: buttons[index] };
     }
     return null;
   }
-  const api = { normalize, isPrompt, choiceIndex, find };
+  function find(doc, visible, enabled) {
+    const match = inspect(doc, visible);
+    return match && enabled(match.button) ? match.button : null;
+  }
+  const api = { normalize, isPrompt, choiceIndex, inspect, find };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else Object.defineProperty(root, 'UsesResume', { value: api });
 })(globalThis);

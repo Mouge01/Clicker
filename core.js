@@ -66,6 +66,11 @@
     };
     const sameLesson = s.lesson && st.lessonId === s.lesson.id;
     const freshPage = s.lesson && st.observedInstance !== s.instance;
+    // Bir tıklama yalnızca yapıldığı belge/ders için geçerlidir. Yenilemede
+    // yeniden açılan devam penceresi eski tıklamanın onayını beklememelidir.
+    if ((freshPage || (s.lesson && !sameLesson)) && ['advance', 'resume'].includes(st.pending?.kind))
+      st.pending = null;
+    if (s.resume && st.pending?.kind === 'advance') st.pending = null;
     const increased = sameLesson && s.lesson.percent != null &&
       (st.anchorPercent == null || s.lesson.percent > st.anchorPercent);
     if (s.lesson && (!sameLesson || freshPage || increased)) {
@@ -80,6 +85,7 @@
         st.lastTick = now;
         st.slideKey = null;
         st.readySince = null;
+        st.unavailableSince = null;
       }
     }
     const elapsed = st.lastTick == null ? 0 : Math.max(0, now - st.lastTick);
@@ -100,6 +106,9 @@
       const p = st.pending;
       const moved = p.kind === 'advance' ? !!s.key && s.key !== p.key :
         p.kind === 'resume' ? !s.resume && !!s.key :
+        p.kind === 'switch' ? s.lesson.id === p.targetId && (s.instance !== p.instance || s.resume ||
+          (!!s.key && ((p.fromKey != null && s.key !== p.fromKey) ||
+            (p.playerInstance != null && s.playerInstance != null && s.playerInstance !== p.playerInstance)))) :
         s.instance !== p.instance && s.lesson.id === p.targetId;
       if (moved) { st.pending = null; st.readySince = null; }
       else if (now - p.at > 20000) return pause('Tıklamadan sonra geçiş doğrulanamadı. Oynatıcıyı kontrol edin.');
@@ -109,10 +118,13 @@
       if (!st.autoNext) return pause('Bu ders Tamamlandı olarak doğrulandı.');
       const next = nextAvailable();
       if (!next) return pauseForQuestions();
-      st.pending = { kind: 'switch', at: now, targetId: next.id, instance: s.instance };
+      st.pending = { kind: 'switch', at: now, targetId: next.id, instance: s.instance,
+        fromKey: s.key, playerInstance: s.playerInstance };
       return result('switch', 'Sonraki eksik ders açılıyor…', { targetId: next.id });
     }
     if (s.resume) {
+      st.unavailableSince = null;
+      if (s.resumeEnabled === false) return result('wait', 'Devam penceresindeki Evet / Devam düğmesinin etkinleşmesi bekleniyor.');
       st.pending = { kind: 'resume', at: now };
       return result('resume', 'Kayıtlı konumdan devam ediliyor…');
     }
@@ -127,7 +139,8 @@
       if (!st.skipQuestions) return pause('Soru sayfası: soruyu yanıtlayıp sonraki içerik slaydına geçin; sonra Başlat’a basın.');
       const next = nextAvailable();
       if (!next) return pauseForQuestions();
-      st.pending = { kind: 'switch', at: now, targetId: next.id, instance: s.instance };
+      st.pending = { kind: 'switch', at: now, targetId: next.id, instance: s.instance,
+        fromKey: s.key, playerInstance: s.playerInstance };
       return result('switch', 'Bu ders soru bekleyenlere eklendi. Diğer ders açılıyor…', { targetId: next.id });
     }
     if (s.end) {

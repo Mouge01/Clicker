@@ -1,4 +1,4 @@
-"""Yalnızca kurulum için gereken dosyalardan V1.3 alpha ZIP'i oluşturur."""
+"""Yalnızca kurulum için gereken dosyalardan V1.3.1 alpha ZIP'i oluşturur."""
 import json
 from pathlib import Path
 from zipfile import ZipFile, ZIP_DEFLATED
@@ -6,12 +6,12 @@ from zipfile import ZipFile, ZIP_DEFLATED
 ROOT = Path(__file__).resolve().parent
 FILES = ('manifest.json', 'core.js', 'resume.js', 'content.js', 'background.js', 'visibility.js', 'README.md', 'KURULUM.md', 'CHANGELOG.md', 'preview.png')
 manifest = json.loads((ROOT / 'manifest.json').read_text(encoding='utf-8'))
-assert manifest['version'] == '1.3.0'
-assert manifest['version_name'] == 'V1.3 alpha'
+assert manifest['version'] == '1.3.1'
+assert manifest['version_name'] == 'V1.3.1 alpha'
 for name in FILES:
     if not (ROOT / name).is_file():
         raise FileNotFoundError(name)
-target = ROOT / 'uses-slayt-yardimcisi-v1.3-alpha.zip'
+target = ROOT / 'uses-slayt-yardimcisi-v1.3.1-alpha.zip'
 with ZipFile(target, 'w', ZIP_DEFLATED) as archive:
     for name in FILES:
         archive.write(ROOT / name, name)

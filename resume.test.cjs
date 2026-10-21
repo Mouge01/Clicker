@@ -6,7 +6,9 @@ const R = require('./resume.js');
 test('Türkçe büyük harf ve ASCII devam istemleri tanınır', () => {
   for (const text of ['Kaldığınız yerden devam etmek istiyor musunuz?',
     'KALDIĞINIZ YERDEN DEVAM ETMEK İSTER MİSİNİZ?',
-    'Kaldiginiz yerden\n devam etmek istiyor musunuz?']) assert.equal(R.isPrompt(text), true);
+    'Kaldiginiz yerden\n devam etmek istiyor musunuz?',
+    'Kaldığımız yerden devam edelim mi?',
+    'Son kaldığınız noktadan devam etmek ister misiniz?']) assert.equal(R.isPrompt(text), true);
 });
 test('Evet seçeneği sırasından bağımsız ve Devam seçeneğinden önce seçilir', () => {
   assert.equal(R.choiceIndex('Kaldığınız yerden devam etmek istiyor musunuz?', ['Hayır', 'Devam', 'EVET']), 2);

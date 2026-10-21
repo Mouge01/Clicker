@@ -115,6 +115,45 @@ test('devam penceresinden sonraki soru katılımsız modda ertelenir', () => {
   assert.equal(b.action.targetId, other.id);
   assert.equal(b.state.deferredLessons[lesson.id].title, lesson.title);
 });
+
+test('yenilenen sayfada eski slayt tıklaması devam istemini engellemez', () => {
+  const st = running({ observedInstance: 'old', lessonId: lesson.id,
+    pending: { kind: 'advance', at: 1000, key: 'slide-a' } });
+  const a = C.step(snapshot({ instance: 'new', resume: true }), st, 30000);
+  assert.equal(a.action.kind, 'resume');
+});
+
+test('yenilenen sayfa eski devam tıklamasını yeni pencereye taşımamalıdır', () => {
+  const st = running({ observedInstance: 'old', lessonId: lesson.id,
+    pending: { kind: 'resume', at: 1000 } });
+  assert.equal(C.step(snapshot({ instance: 'new', resume: true }), st, 30000).action.kind, 'resume');
+});
+
+test('aynı belgedeki yeni devam istemi önceki slayt tıklamasının önüne geçer', () => {
+  const st = running({ observedInstance: 'page1', lessonId: lesson.id,
+    pending: { kind: 'advance', at: 1000, key: 'slide-a' } });
+  assert.equal(C.step(snapshot({ resume: true }), st, 2000).action.kind, 'resume');
+});
+
+test('aynı belgede açılan hedef dersin yeni içeriği geçişi doğrular', () => {
+  const st = running({ observedInstance: 'page1', lessonId: lesson.id,
+    pending: { kind: 'switch', targetId: other.id, instance: 'page1', fromKey: 'slide-a', at: 1000 } });
+  const a = C.step(snapshot({ lesson: other, key: 'slide-b' }), st, 2000);
+  assert.equal(a.state.pending, null); assert.equal(a.state.enabled, true);
+});
+
+test('hedef ders satırı değişse de eski soru içeriğiyle geçiş doğrulanmaz', () => {
+  const st = running({ observedInstance: 'page1', lessonId: lesson.id,
+    pending: { kind: 'switch', targetId: other.id, instance: 'page1', fromKey: 'slide-a', at: 1000 } });
+  const a = C.step(snapshot({ lesson: other, question: true }), st, 2000);
+  assert.equal(a.action.kind, 'wait'); assert.equal(a.state.pending.kind, 'switch');
+  assert.equal(a.state.deferredLessons[other.id], undefined);
+});
+
+test('pasif Evet etkinleşene kadar devam penceresinin arkasındaki slayt ilerlemez', () => {
+  const a = C.step(snapshot({ resume: true, resumeEnabled: false }), running(), 1000);
+  assert.equal(a.action.kind, 'wait'); assert.equal(a.state.pending, null);
+});
 test('arka plandaki sekmede işlem yapılmaz', () => {
   assert.equal(ready(snapshot({ hidden: true }), { backgroundMode: false }).action.kind, 'wait');
 });

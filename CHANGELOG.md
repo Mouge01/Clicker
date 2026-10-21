@@ -1,5 +1,13 @@
 # Sürüm notları
 
+## V1.3.1 alpha — 22 Ekim 2026
+
+- Yenilemeden kalan slayt/devam tıklaması beklemesinin yeni devam penceresini kilitlemesi düzeltildi.
+- Aynı belge içinde gerçekleşen ders değişimleri artık yeni içerik, yeni oynatıcı belgesi veya devam penceresiyle doğrulanır. Eski soru ekranı yeni derse ait kabul edilmez.
+- Devam penceresi doğrudan slayt içinde olsa da tanınır. Gizli eski soru alanları istemin tanınmasını engellemez; pasif Evet etkinleşene kadar arkadaki İLERİ tıklanmaz.
+- Görünür sürüm numarası V1.3.1 oldu. Kurulum için uzantı ve eğitim sekmesi yenilenmelidir.
+- Chrome açmadan çalışan jsdom denetleyici testleri eklendi. **103 / 103** test geçti; bu sürüm gerçek USES oturumunda yeniden denenmedi.
+
 ## V1.3 alpha — 22 Ekim 2026
 
 - Yarım kalan dersin devam penceresinde otomatik **Evet** seçimi güçlendirildi: Türkçe büyük harf, düğme/input/ARIA biçimleri ve iç içe oynatıcı çerçeveleri desteklenir.

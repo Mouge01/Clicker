@@ -1,3 +1,12 @@
+# V1.3.1 doğrulaması — 22 Ekim 2026
+
+- `npm test`: **103 / 103 başarılı**. Chrome veya gerçek eğitim oturumu kullanılmadı.
+- Düzeltmeden önce yeni regresyon senaryolarının 10'u başarısızdı. Sorunlar eski tıklama kaydının yenileme sonrasına taşınması, aynı belgede ders değişiminin tanınmaması, slayt içindeki devam isteminin atlanması ve pasif istemin arkasındaki slayda işlem yapılmasıyla yeniden üretildi.
+- Üretim `core.js`, `resume.js` ve `content.js` dosyaları jsdom içinde birlikte çalıştırıldı. Başlat → Evet → kayıtlı slayt, zaman dolması → İLERİ, soru erteleme → aynı belgede diğer ders → Evet → sonraki slayt zincirleri doğrulandı.
+- Geç yüklenen dersin eski soru içeriğiyle yanlışlıkla ertelenmediği; gizli/pasif Evet, görünmeyen eski soru alanı ve önceki 16 DOM istemi senaryosu kontrol edildi.
+- jsdom yerleşim üretmez: yalnızca `getClientRects` görünürlük ölçümü test ortamında modellenir. Seçiciler, çerçeveler, oturum kaydı, gölge DOM paneli ve olay işleyicileri gerçek DOM uygulamasıdır. Bu testler gerçek Chrome/USES doğrulamasının yerine geçtiği iddiasıyla sunulmaz.
+- `jsdom` yalnızca geliştirme bağımlılığıdır; üretim ZIP'i üçüncü taraf kitaplık, test dosyası veya kişisel eğitim verisi içermez.
+
 # V1.3 doğrulaması — 22 Ekim 2026
 
 - `npm test`: **87 / 87 başarılı**; eski süre/soru/geçiş korumaları, arka plan davranışları ve devam istemi senaryoları dahil.

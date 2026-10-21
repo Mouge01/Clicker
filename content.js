@@ -8,6 +8,7 @@
   const course = location.pathname.replace(/\/\d+\/?$/, '').replace(/\/$/, '');
   const storageKey = 'uses-slide-helper:v1:' + course;
   const instance = crypto.randomUUID();
+  const playerInstances = new WeakMap();
   const END_BUFFER_MS = 60000;
   let state = C.initial();
   let storageAvailable = true;
@@ -114,10 +115,14 @@
     const s = { instance, lesson, lessons, hidden: realHidden(), key: null, resume: false,
       question: false, end: false, nextVisible: false, nextEnabled: false, timeline: null };
     const docs = playerDocuments();
-    s.resumeEl = [document, ...docs].map(doc => R.find(doc, visible, enabled)).find(Boolean);
-    s.resume = !!s.resumeEl;
-    const doc = docs.find(doc => visible(doc.getElementById('slide'))) || docs[0];
+    const resume = [document, ...docs].map(doc => R.inspect(doc, visible)).find(Boolean);
+    s.resumeEl = resume?.button;
+    s.resume = !!resume;
+    s.resumeEnabled = enabled(s.resumeEl);
+    const doc = s.resumeEl?.ownerDocument || docs.find(doc => visible(doc.getElementById('slide'))) || docs[0];
     if (!doc) return s;
+    if (!playerInstances.has(doc)) playerInstances.set(doc, crypto.randomUUID());
+    s.playerInstance = playerInstances.get(doc);
     const slide = doc.getElementById('slide');
     if (slide && visible(slide)) {
       const text = slide.innerText || slide.textContent;
@@ -162,7 +167,7 @@
       section[data-running=true]{border-color:#16838a}#badge{font-size:11px;font-weight:500;color:#506878}
     </style>
     <section aria-label="USES Slayt Yardımcısı">
-      <header><span>USES Slayt Yardımcısı V1.3 <span id="badge">Hazır</span></span><button id="minimize" aria-label="Paneli küçült" title="Paneli küçült">−</button></header>
+      <header><span>USES Slayt Yardımcısı V1.3.1 <span id="badge">Hazır</span></span><button id="minimize" aria-label="Paneli küçült" title="Paneli küçült">−</button></header>
       <div class="body"><p id="lesson">Ders okunuyor…</p><p id="slide" class="muted"></p>
       <progress id="progress" max="100" value="0" aria-label="Slayt zaman çizgisi"></progress>
       <p id="status" role="status" aria-live="polite"></p><p id="duration" class="muted"></p><p id="read-at" class="muted"></p><p id="summary" class="muted"></p><p id="background-status" class="muted"></p>
@@ -286,7 +291,7 @@
       paint(s);
       if (action.kind === 'advance') {
         const latest = collect();
-        if (latest.key !== action.fromKey || latest.question || !latest.nextEnabled || !C.timelineDone(latest.timeline)) {
+        if (latest.key !== action.fromKey || latest.resume || latest.question || !latest.nextEnabled || !C.timelineDone(latest.timeline)) {
           state.pending = null; state.readySince = null; save(); return;
         }
         log('İLERİ: ' + s.title);
