@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "USES Slayt Yardımcısı",
+  "version": "1.2.0",
+  "version_name": "V1.2 alpha",
+  "description": "Slayt sürelerini takip eder; katılımsız modda sorulu dersi sonraya bırakıp diğer derse geçer.",
+  "content_scripts": [{
+    "matches": ["https://egitim.saglik.gov.tr/EgitimIzle/*"],
+    "js": ["core.js", "content.js"],
+    "run_at": "document_idle",
+    "all_frames": false
+  }]
+}

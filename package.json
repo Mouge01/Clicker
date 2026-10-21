@@ -1,0 +1,9 @@
+{
+  "name": "uses-slayt-yardimcisi",
+  "version": "1.2.0-alpha",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests.cjs",
+    "demo:prepare": "node prepare-demo.cjs"
+  }
+}
